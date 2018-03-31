@@ -1,13 +1,21 @@
 # 工作日计算API
 
 初始化工作
-创建一个workday的数据库
 
+创建一个`workday`的数据库
+
+把
+```
 src/main/resources/application.yml
+```
 
 里面的数据库地址，用户名，密码改成你自己的
 
-运行项目在http://localhost/workday/index即可看到如下界面
+运行项目在
+
+http://localhost/workday/index
+
+即可看到如下界面
 
 
 ![工作日图片](https://raw.githubusercontent.com/peer44/peer44.github.io/gh-pages/QQ%E6%88%AA%E5%9B%BE20180331214152.png)
