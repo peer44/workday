@@ -1,0 +1,160 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset='utf-8'/>
+  <title>节假日日历</title>
+  <link th:href="@{/css/fullcalendar.min.css}" rel='stylesheet'/>
+  <link th:href="@{/css/fullcalendar.print.min.css}" rel='stylesheet' media='print'/>
+  <script th:src="@{/js/moment.min.js}"></script>
+  <script th:src="@{/js/jquery.min.js}"></script>
+  <script th:src="@{/js/fullcalendar.min.js}"></script>
+  <script th:src="@{/js/locale-all.js}"></script>
+  <script>
+    $(document).ready(function () {
+      var initialLocaleCode = 'zh-cn';
+      var today = moment().format('YYYY-MM-DD');
+      var url = 'http://127.0.0.1/holiday/init';
+      var addUrl = 'http://127.0.0.1/holiday/add?date=';
+      var deleteUrl = 'http://127.0.0.1/holiday/delete?date=';
+
+      // console.info(today);
+      function updateWorkDay(date, add) {
+        var updateUrl;
+        if (add === 'add') {
+          updateUrl = addUrl + date;
+        } else {
+          updateUrl = deleteUrl + date;
+        }
+        $.ajax({
+          url: updateUrl,
+          type: 'post',
+          async: true,
+          success: function (result) {
+            console.info(result);
+          }
+        });
+
+      }
+
+      $('#calendar').fullCalendar({
+        locale: 'zh-cn',
+        contentHeight: 600,
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
+        },
+        firstDay: 0,
+        defaultDate: today,
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: {
+          url: url,
+          error: function () {
+            $('#script-warning').show();
+          }
+        },
+        loading: function (bool) {
+          $('#loading').toggle(bool);
+        },
+        dayClick: function (date, jsEvent, view) {
+          console.info('Clicked on: ' + date.format());
+
+          console.info('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+
+          console.info('Current view: ' + view.name);
+          var events = $('#calendar').fullCalendar('clientEvents', function (event) {
+            var eventStart = event.start.format('YYYY-MM-DD');
+            var eventEnd = event.end ? event.end.format('YYYY-MM-DD') : null;
+            var theDate = date.format('YYYY-MM-DD');
+            // Make sure the event starts on or before date and ends afterward
+            // Events that have no end date specified (null) end that day, so check if start = date
+            return (eventStart <= theDate && (eventEnd >= theDate) && !(eventStart < theDate
+                && (eventEnd == theDate))) || (eventStart == theDate && (eventEnd === null));
+          });
+          // console.log(events);
+          if (events.length == 0) {
+            var theDate = date.format('YYYY-MM-DD');
+            // console.info(theDate);
+            $('#calendar').fullCalendar('renderEvent', {
+              id: theDate,
+              title: '假',
+              start: date,
+              allDay: true,
+              color: '#54FF9F',
+              textColor: "#000000"
+            });
+            updateWorkDay(theDate, 'add');
+          } else {
+            // console.info(events);
+            $.each(events, function (i, val) {
+              $('#calendar').fullCalendar('removeEvents', val.id);
+            });
+            updateWorkDay(theDate, 'del');
+          }
+        },
+        eventClick: function (calEvent, jsEvent, view) {
+          // console.info(calEvent.id);
+          // console.info(jsEvent);
+          // console.info(view);
+          $('#calendar').fullCalendar('removeEvents', calEvent.id);
+          updateWorkDay(calEvent.id, 'del');
+        }
+
+      });
+
+    });
+
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+      font-size: 14px;
+    }
+
+    #script-warning {
+      display: none;
+      background: #eee;
+      border-bottom: 1px solid #ddd;
+      padding: 0 10px;
+      line-height: 40px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      color: red;
+    }
+
+    #loading {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 10px;
+    }
+
+    .fc-sat span,
+    .fc-sun span {
+      color: #ED6D23 !important;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id='script-warning'>
+  <code>工作日后台</code>必须先运行
+</div>
+
+<div id='loading'>loading...</div>
+
+<div id='calendar'></div>
+
+</body>
+
+</html>

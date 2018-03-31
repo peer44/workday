@@ -1,0 +1,17 @@
+server:
+  port: 80
+spring:
+  profiles:
+    active: dev
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/workday
+    username: root
+    password: cheng
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
