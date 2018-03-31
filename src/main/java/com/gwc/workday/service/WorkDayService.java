@@ -4,6 +4,7 @@ import com.gwc.workday.dao.WorkDayDao;
 import com.gwc.workday.entity.WorkDay;
 import com.gwc.workday.util.DateUtils;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -67,17 +68,23 @@ public class WorkDayService {
   }
 
   public String afterDays(String date, Integer days) throws ParseException {
-
+    List<WorkDay> workDays = workDayDao.findAll();
+    List<String> holidays = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(workDays)) {
+      workDays.forEach(workDay -> {
+        holidays.add(workDay.getDate());
+      });
+    }
     // 控制向前还是向后
-    Boolean position = days > 0 ? true : false;
+    boolean position = days > 0 ? true : false;
     int size = Math.abs(days);
     while (size > 0) {
-      if (position == true) {
+      if (position) {
         date = DateUtils.plusDays(date, 1);
       } else {
         date = DateUtils.plusDays(date, -1);
       }
-      if (isWorkDay(date) == true) {
+      if (!holidays.contains(date)) {
         size--;
       }
     }
