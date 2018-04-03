@@ -13,7 +13,7 @@ src/main/resources/application.yml
 
 运行项目在
 
-http://localhost/workday/index
+http://localhost/index
 
 即可看到如下界面
 
