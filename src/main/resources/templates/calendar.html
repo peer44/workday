@@ -1,22 +1,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset='utf-8'/>
-  <title>节假日日历</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>节假日维护日历</title>
   <link th:href="@{/css/fullcalendar.min.css}" rel='stylesheet'/>
   <link th:href="@{/css/fullcalendar.print.min.css}" rel='stylesheet' media='print'/>
-  <script th:src="@{/js/moment.min.js}"></script>
   <script th:src="@{/js/jquery.min.js}"></script>
-  <script th:src="@{/js/fullcalendar.min.js}"></script>
-  <script th:src="@{/js/locale-all.js}"></script>
+  <script th:src="@{/js/moment.min.js}"></script>
+  <script th:src="@{/js/lunar.js}"></script>
+  <script th:src="@{/js/fullcalendar.js}"></script>
+  <script th:src="@{/js/zh-cn.js}"></script>
   <script>
     $(document).ready(function () {
-      var initialLocaleCode = 'zh-cn';
-      var today = moment().format('YYYY-MM-DD');
-      var url = 'http://127.0.0.1/holiday/init';
-      var addUrl = 'http://127.0.0.1/holiday/add?date=';
-      var deleteUrl = 'http://127.0.0.1/holiday/delete?date=';
-
-      // console.info(today);
+      // 更新节假日
       function updateWorkDay(date, add) {
         var updateUrl;
         if (add === 'add') {
@@ -32,20 +28,32 @@
             console.info(result);
           }
         });
-
       }
 
+      var initialLocaleCode = 'zh-cn';
+      var today = moment().format('YYYY-MM-DD');
+      var url = 'http://127.0.0.1/holiday/init';
+      var addUrl = 'http://127.0.0.1/holiday/add?date=';
+      var deleteUrl = 'http://127.0.0.1/holiday/delete?date=';
+
       $('#calendar').fullCalendar({
-        locale: 'zh-cn',
-        contentHeight: 600,
+        locale: initialLocaleCode,
+        contentHeight: 630,
         header: {
           left: 'prev,next today',
           center: 'title',
-          right: ''
+          right: 'prevYear,nextYear'
+        },
+        buttonText: {
+          prev: "上一月",
+          next: "下一月",
+          prevYear: "上一年",
+          nextYear: "下一年",
+          today: '今天'
         },
         firstDay: 0,
         defaultDate: today,
-        editable: true,
+        editable: false,
         eventLimit: true, // allow "more" link when too many events
         events: {
           url: url,
@@ -77,11 +85,11 @@
             // console.info(theDate);
             $('#calendar').fullCalendar('renderEvent', {
               id: theDate,
-              title: '假',
+              title: '休',
               start: date,
               allDay: true,
-              color: '#54FF9F',
-              textColor: "#000000"
+              color: '#6aba49',
+              textColor: "#fff"
             });
             updateWorkDay(theDate, 'add');
           } else {
@@ -138,9 +146,58 @@
       padding: 0 10px;
     }
 
-    .fc-sat span,
-    .fc-sun span {
+    .fc table > thead > tr > th div {
+      font-weight: bold;
+      color: #25992E;
+      font-size: 14px;
+    }
+
+    .fc-sat div,
+    .fc-sun div {
       color: #ED6D23 !important;
+    }
+
+    .fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
+      width: 100%;
+      text-align: right;
+      display: block;
+      font-size: 20px;
+      font-family: Arial;
+      font-weight: 600;
+      padding: 12px 12px 0 12px;
+      line-height: 23px;
+      height: 23px;
+      color: #555;
+
+    }
+
+    .fc-day-cnTerm {
+      text-align: right;
+      padding: 12px 12px 0 12px;
+      color: #6ABA49;
+      font-size: 12px;
+    }
+
+    .fc-day-cnDate {
+      text-align: right;
+      padding: 12px 12px 0 12px;
+      color: #999;
+      font-size: 12px;
+    }
+
+    /* event单元格 */
+
+    .fc-day-grid-event {
+      position: absolute;
+      top: 10px;
+      background-color: green;
+      margin: 12px;
+      padding: 0 1px;
+      text-align: right;
+      font-size: 18px;
+      background-color: rgba(255, 255, 255, 0);
+      border-color: rgba(255, 255, 255, 0);
+      color: #ED6D23;
     }
   </style>
 </head>

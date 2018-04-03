@@ -21,7 +21,7 @@ public class EventVO {
 
   @ApiModelProperty(value = "id")
   private String id;
-  @ApiModelProperty(value ="显示的内容")
+  @ApiModelProperty(value = "显示的内容")
   private String title;
   private Boolean allDay;
   /**
@@ -33,7 +33,7 @@ public class EventVO {
    */
   private String end;
   /**
-   *  event's background and border color
+   * event's background and border color
    */
   private String color;
   /**
@@ -45,16 +45,15 @@ public class EventVO {
    */
   private String textColor;
 
-  private String rendering;
+  private String textAlign = "left";
 
   public EventVO(String start) {
     this.id = start;
-    this.title = "假";
+    this.title = "休";
     this.allDay = true;
     this.start = start;
-    this.color="#54FF9F";
+    this.color = "#6aba49";
     this.backgroundColor = this.color;
-    this.textColor="#000000";
-    // this.rendering = "background";
+    this.textColor = "#fff";
   }
 }

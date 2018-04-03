@@ -55,7 +55,7 @@ public class Swagger2Config {
 
   private String initContextInfo() {
     StringBuffer sb = new StringBuffer();
-    sb.append("以下是本项目的API文档");
+    sb.append("以下是工作日的API文档");
     return sb.toString();
   }
 }

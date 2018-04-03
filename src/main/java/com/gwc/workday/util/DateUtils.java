@@ -32,12 +32,12 @@ public class DateUtils {
   }
 
   /**
-   * 是否是日期
+   * 是否是日期 yyyy-mm-dd
    * @param str
    * @return
    */
   public static boolean isDate(String str){
-    Pattern pattern = Pattern.compile("^(\\d{4})-(\\d{1,2})-(\\d{1,2})$");
+    Pattern pattern = Pattern.compile("^(\\d{4})-(\\d{2})-(\\d{2})$");
     Matcher isNum = pattern.matcher(str);
     if (!isNum.matches()) {
       return false;

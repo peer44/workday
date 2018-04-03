@@ -61,6 +61,12 @@ public class WorkDayService {
     return workDays;
   }
 
+  public List<WorkDay> findHolidays(String start, String end) {
+    Sort sort = new Sort(Sort.Direction.ASC, "date");
+    List<WorkDay> workDays = workDayDao.findByDateBetween(start, end, sort);
+    return workDays;
+  }
+
   public List<WorkDay> findByYear(String year) {
     Sort sort = new Sort(Sort.Direction.ASC, "date");
     List<WorkDay> workDays = workDayDao.findByDateGreaterThanEqual(year + "-01-01", sort);
@@ -68,7 +74,27 @@ public class WorkDayService {
   }
 
   public String afterDays(String date, Integer days) throws ParseException {
-    List<WorkDay> workDays = workDayDao.findAll();
+
+    String begin = "";
+    String end = "";
+    if (days > 0) {
+      begin = date;
+      if (days < 10) {
+        end = DateUtils.plusDays(begin, days * 10);
+      } else {
+        end = DateUtils.plusDays(begin, days * 5);
+      }
+    } else {
+      end = date;
+      if (Math.abs(days) < 10) {
+        begin = DateUtils.plusDays(begin, days * 10);
+      } else {
+        begin = DateUtils.plusDays(begin, days * 5);
+      }
+    }
+
+    List<WorkDay> workDays = workDayDao
+        .findByDateBetween(begin, end, new Sort(Sort.Direction.ASC, "date"));
     List<String> holidays = new ArrayList<>();
     if (!CollectionUtils.isEmpty(workDays)) {
       workDays.forEach(workDay -> {
