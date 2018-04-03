@@ -35,3 +35,11 @@ http://localhost/workday/index
 ### 某天之后/前多少天的工作日
 
 ![节假日api](https://raw.githubusercontent.com/peer44/peer44.github.io/gh-pages/QQ%E6%88%AA%E5%9B%BE20180331214752.png)
+
+# 致谢
+
+感谢这两位老铁，参照这两篇文章添加了农历
+
+http://feifei.im/archives/168
+
+https://blog.csdn.net/guogrower/article/details/79023423
