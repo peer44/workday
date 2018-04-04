@@ -21,10 +21,10 @@ public interface WorkDayDao extends JpaRepository<WorkDay, Integer> {
    * @param date
    * @return
    */
-  List<WorkDay> findByDate(String date);
+  WorkDay findFirstByDate(String date);
 
   /**
-   * 某天之后的所有假日
+   * 某天之后的所有节假日
    * @param date 计算机日期
    * @param sort 排序
    * @return

@@ -6,9 +6,12 @@ import com.gwc.workday.util.DateUtils;
 import java.text.ParseException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 工作日service
@@ -19,6 +22,7 @@ import org.springframework.util.CollectionUtils;
  * @date 2017-09-21 22:35
  */
 @Service
+@CacheConfig(cacheNames = "workdays")
 public class WorkDayService {
 
   @Autowired
@@ -29,14 +33,9 @@ public class WorkDayService {
    *
    * @param date 给定的节假日 yyyy-MM-dd
    */
+  @CacheEvict(key = "#date")
   public void delete(String date) {
-    List<WorkDay> workDays = workDayDao.findByDate(date);
-    WorkDay workDay = new WorkDay();
-    workDay.setDate(date);
-    workDay.setIsWorkDay(false);
-    if (!CollectionUtils.isEmpty(workDays)) {
-      workDay.setId(workDays.get(0).getId());
-    }
+    WorkDay workDay = workDayDao.findFirstByDate(date);
     workDayDao.delete(workDay);
   }
 
@@ -46,14 +45,14 @@ public class WorkDayService {
    * @param date yyyy-MM-dd
    * @return 返回更新后的数据
    */
+  @CacheEvict(key = "#date")
   public WorkDay save(String date) {
-    List<WorkDay> workDays = workDayDao.findByDate(date);
-    WorkDay workDay = new WorkDay();
+    WorkDay workDay = workDayDao.findFirstByDate(date);
+    if (ObjectUtils.isEmpty(workDay)) {
+      workDay = new WorkDay();
+    }
     workDay.setDate(date);
     workDay.setIsWorkDay(false);
-    if (!CollectionUtils.isEmpty(workDays)) {
-      workDay.setId(workDays.get(0).getId());
-    }
     return workDayDao.save(workDay);
   }
 
@@ -63,9 +62,10 @@ public class WorkDayService {
    * @param date 给定的日期 yyyy-MM-dd
    * @return true是工作日，false不是工作日
    */
+  @Cacheable(key = "#date")
   public boolean isWorkDay(String date) {
-    List<WorkDay> holidays = workDayDao.findByDate(date);
-    return CollectionUtils.isEmpty(holidays) ? true : false;
+    WorkDay holiday = workDayDao.findFirstByDate(date);
+    return ObjectUtils.isEmpty(holiday) ? true : false;
   }
 
   /**
