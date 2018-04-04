@@ -13,11 +13,7 @@ public class ResponseUtil {
    * 操作成功没有数据返回
    */
   public static ResponseVO success() {
-    ResponseVO ResponseVO = new ResponseVO();
-    ResponseVO.setErrorCode(ErrorCode.SUCCESS.getCode());
-    ResponseVO.setMessage("请求成功");
-    ResponseVO.setData(null);
-    return ResponseVO;
+    return success(null);
   }
 
   /**
@@ -45,10 +41,7 @@ public class ResponseUtil {
    * 参数错误
    */
   public static ResponseVO paramError() {
-    ResponseVO responseVO = new ResponseVO();
-    responseVO.setErrorCode(ErrorCode.INPUT_PARAM_ERROR.getCode());
-    responseVO.setMessage(ErrorCode.INPUT_PARAM_ERROR.getMessage());
-    return responseVO;
+    return paramError(null);
   }
 
   /**

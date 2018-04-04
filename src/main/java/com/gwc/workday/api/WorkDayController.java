@@ -1,5 +1,6 @@
 package com.gwc.workday.api;
 
+import com.gwc.workday.exception.ParamException;
 import com.gwc.workday.service.WorkDayService;
 import com.gwc.workday.util.DateUtils;
 import com.gwc.workday.util.ResponseUtil;
@@ -31,20 +32,20 @@ public class WorkDayController {
   public ResponseVO<Boolean> isWorkDay(
       @ApiParam(value = "具体的时间，yyyy-MM-dd") @RequestParam String date) {
     if (!DateUtils.isDate(date)) {
-      return ResponseUtil.paramError("时间必须满足yyyy-MM-dd，比如2018-01-01");
+      throw new ParamException("时间必须满足yyyy-MM-dd，比如2018-01-01");
     }
     return ResponseUtil.success(workDayService.isWorkDay(date));
   }
 
 
-  @ApiOperation(value = "从date开始向前days/后-days个工作日后的工作日，YYYY-MM-DD格式")
+  @ApiOperation(value = "从date开始向前days/后-days个工作日后的工作日")
   @GetMapping(value = "workday/afterDays")
   public ResponseVO<String> afterDays(
       @ApiParam(value = "具体的时间，yyyy-MM-dd") @RequestParam String date,
       @ApiParam(value = "间隔天数，整数（可以为负）") @RequestParam Integer days)
       throws ParseException {
     if (!DateUtils.isDate(date)) {
-      return ResponseUtil.paramError("时间必须满足yyyy-MM-dd，比如2018-01-01");
+      throw new ParamException("时间必须满足yyyy-MM-dd，比如2018-01-01");
     }
     return ResponseUtil.success(workDayService.afterDays(date, days));
   }

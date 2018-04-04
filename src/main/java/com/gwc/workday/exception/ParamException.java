@@ -13,9 +13,9 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class MyException extends RuntimeException {
+public class ParamException extends RuntimeException {
 
-  public MyException(String message) {
+  public ParamException(String message) {
     super(message);
   }
 }

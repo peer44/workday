@@ -4,7 +4,6 @@ import com.gwc.workday.dao.WorkDayDao;
 import com.gwc.workday.entity.WorkDay;
 import com.gwc.workday.util.DateUtils;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -25,82 +24,81 @@ public class WorkDayService {
   @Autowired
   private WorkDayDao workDayDao;
 
+  /**
+   * 删除节假日
+   *
+   * @param date 给定的节假日 yyyy-MM-dd
+   */
   public void delete(String date) {
-    List<WorkDay> workDayList = workDayDao.findByDate(date);
+    List<WorkDay> workDays = workDayDao.findByDate(date);
     WorkDay workDay = new WorkDay();
     workDay.setDate(date);
     workDay.setIsWorkDay(false);
-    if (!CollectionUtils.isEmpty(workDayList)) {
-      workDay.setId(workDayList.get(0).getId());
+    if (!CollectionUtils.isEmpty(workDays)) {
+      workDay.setId(workDays.get(0).getId());
     }
     workDayDao.delete(workDay);
   }
 
+  /**
+   * 更新节假日
+   *
+   * @param date yyyy-MM-dd
+   * @return 返回更新后的数据
+   */
   public WorkDay save(String date) {
-    List<WorkDay> workDayList = workDayDao.findByDate(date);
+    List<WorkDay> workDays = workDayDao.findByDate(date);
     WorkDay workDay = new WorkDay();
     workDay.setDate(date);
     workDay.setIsWorkDay(false);
-    if (!CollectionUtils.isEmpty(workDayList)) {
-      workDay.setId(workDayList.get(0).getId());
+    if (!CollectionUtils.isEmpty(workDays)) {
+      workDay.setId(workDays.get(0).getId());
     }
     return workDayDao.save(workDay);
   }
 
-  public Boolean isWorkDay(String date) {
+  /**
+   * 判断指定的日期是不是工作日
+   *
+   * @param date 给定的日期 yyyy-MM-dd
+   * @return true是工作日，false不是工作日
+   */
+  public boolean isWorkDay(String date) {
     List<WorkDay> holidays = workDayDao.findByDate(date);
-    if (!CollectionUtils.isEmpty(holidays)) {
-      return false;
-    }
-    return true;
+    return CollectionUtils.isEmpty(holidays) ? true : false;
   }
 
-  public List<WorkDay> findAllHolidays() {
-    Sort sort = new Sort(Sort.Direction.ASC, "date");
-    List<WorkDay> workDays = workDayDao.findAll(sort);
-    return workDays;
-  }
-
+  /**
+   * 在给定日期区间内查找节假日
+   *
+   * @param start 开始日期
+   * @param end 结束日期
+   * @return 节假日列表
+   */
   public List<WorkDay> findHolidays(String start, String end) {
     Sort sort = new Sort(Sort.Direction.ASC, "date");
     List<WorkDay> workDays = workDayDao.findByDateBetween(start, end, sort);
     return workDays;
   }
 
+  /**
+   * 查询某一年的工作日
+   */
   public List<WorkDay> findByYear(String year) {
     Sort sort = new Sort(Sort.Direction.ASC, "date");
     List<WorkDay> workDays = workDayDao.findByDateGreaterThanEqual(year + "-01-01", sort);
     return workDays;
   }
 
+  /**
+   * 给定日期之前/后的工作日
+   *
+   * @param date 给定的日期
+   * @param days 多少天
+   * @return 工作日
+   */
   public String afterDays(String date, Integer days) throws ParseException {
 
-    String begin = "";
-    String end = "";
-    if (days > 0) {
-      begin = date;
-      if (days < 10) {
-        end = DateUtils.plusDays(begin, days * 10);
-      } else {
-        end = DateUtils.plusDays(begin, days * 5);
-      }
-    } else {
-      end = date;
-      if (Math.abs(days) < 10) {
-        begin = DateUtils.plusDays(begin, days * 10);
-      } else {
-        begin = DateUtils.plusDays(begin, days * 5);
-      }
-    }
-
-    List<WorkDay> workDays = workDayDao
-        .findByDateBetween(begin, end, new Sort(Sort.Direction.ASC, "date"));
-    List<String> holidays = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(workDays)) {
-      workDays.forEach(workDay -> {
-        holidays.add(workDay.getDate());
-      });
-    }
     // 控制向前还是向后
     boolean position = days > 0 ? true : false;
     int size = Math.abs(days);
@@ -110,7 +108,7 @@ public class WorkDayService {
       } else {
         date = DateUtils.plusDays(date, -1);
       }
-      if (!holidays.contains(date)) {
+      if (isWorkDay(date)) {
         size--;
       }
     }

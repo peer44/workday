@@ -1,6 +1,7 @@
 package com.gwc.workday.handler;
 
 import com.gwc.workday.enums.ErrorCode;
+import com.gwc.workday.exception.ParamException;
 import com.gwc.workday.util.ResponseUtil;
 import com.gwc.workday.vo.ResponseVO;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ public class HandleException {
   @ExceptionHandler(value = Exception.class)
   @ResponseBody
   public ResponseVO handle(Exception e) {
+    if (e instanceof ParamException) {
+      return ResponseUtil.paramError(e.getMessage());
+    }
     logger.error("未知错误:{}", e);
     return ResponseUtil.error(ErrorCode.END_ERROR);
   }

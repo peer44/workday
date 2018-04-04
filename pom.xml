@@ -5,7 +5,7 @@
 
 	<groupId>com.gwc</groupId>
 	<artifactId>workday</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>workday</name>
@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<io.springfox.version>2.8.0</io.springfox.version>
+		<io.springfox.version>2.7.0</io.springfox.version>
 		<checkstyle.config.location>src/main/resources/ali_style.xml</checkstyle.config.location>
 	</properties>
 
