@@ -36,6 +36,7 @@
       var addUrl = 'http://127.0.0.1/holiday/add?date=';
       var deleteUrl = 'http://127.0.0.1/holiday/delete?date=';
 
+      // 加载日历
       $('#calendar').fullCalendar({
         locale: initialLocaleCode,
         contentHeight: 630,
@@ -65,11 +66,9 @@
           $('#loading').toggle(bool);
         },
         dayClick: function (date, jsEvent, view) {
-          console.info('Clicked on: ' + date.format());
-
-          console.info('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-
-          console.info('Current view: ' + view.name);
+          // console.info('Clicked on: ' + date.format());
+          // console.info('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+          // console.info('Current view: ' + view.name);
           var events = $('#calendar').fullCalendar('clientEvents', function (event) {
             var eventStart = event.start.format('YYYY-MM-DD');
             var eventEnd = event.end ? event.end.format('YYYY-MM-DD') : null;
@@ -107,11 +106,9 @@
           $('#calendar').fullCalendar('removeEvents', calEvent.id);
           updateWorkDay(calEvent.id, 'del');
         }
-
       });
 
     });
-
   </script>
   <style>
     body {
@@ -186,7 +183,6 @@
     }
 
     /* event单元格 */
-
     .fc-day-grid-event {
       position: absolute;
       top: 10px;
